@@ -95,7 +95,8 @@ for(int  i = 0 ; i<size ;  i++){
     nebuli[i].updateTime =0.0;
 nebuli[i].pos.x =  windowWidth + (  i *300);
 }
-
+ 
+ float finisLine = nebuli[size-1].pos.x ;
 // nebuli[0].pos.x =  windowWidth;
 // nebuli[1].pos.x =  windowWidth +300;
 // nebuli[2].pos.x =  windowWidth +600;
@@ -142,6 +143,7 @@ scarfyData.runningTime = 0.0;
 float bgX = 0;
 float mgX =  0 ;
 float fgX = 0 ;
+bool collision = false;
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {  /* code */
@@ -206,14 +208,15 @@ float fgX = 0 ;
             scarfyData.pos.y += velocity * dt;
             scarfyData.runningTime += dt;
             //update animation frame 
-
+     
             //update nebula position 
             for(int i = 0; i<size ;i++){
 
   nebuli[i].pos.x +=nebvel*dt;
             }
-         
-         
+         //update the finishline
+        finisLine += nebvel *dt;
+
            if(!isInAir){
                 if(  scarfyData.runningTime >=   scarfyData.updateTime){
               
@@ -243,13 +246,38 @@ float fgX = 0 ;
            
        
       
+      
 
+     for(AnimData nebula : nebuli){
+            float pad  = 20;
+         Rectangle nebRec {
+             nebula.pos.x + pad,
+             nebula.pos.y +pad ,
+             nebula.rec.width -2 *pad ,
+             nebula.rec.height-  2 * pad
+         };
+
+         Rectangle scarfyRec{
+             scarfyData.pos.x ,
+             scarfyData.pos.y ,
+             scarfyData.rec.width,
+             scarfyData.rec.height
+         };
+
+         if(CheckCollisionRecs(nebRec , scarfyRec)){
+             collision=   true;
+         }
+     }
         
       
-        
-            DrawTextureRec(scarfy ,scarfyData.rec ,scarfyData.pos , WHITE);
-        for(int i = 0 ;i<size ;i++){ 
-DrawTextureRec(nebula , nebuli[i].rec , nebuli[i].pos, WHITE);
+           if(collision){
+
+           }  else{
+        DrawTextureRec(scarfy ,scarfyData.rec ,scarfyData.pos , WHITE);
+                for(int i = 0 ;i<size ;i++){ 
+        DrawTextureRec(nebula , nebuli[i].rec , nebuli[i].pos, WHITE);
+           }
+           
         }
             
               

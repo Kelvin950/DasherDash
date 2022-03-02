@@ -13,7 +13,27 @@ float runningTime;
 
 };
 
+bool isOnGround(AnimData data , int windowHeight){
 
+    return  data.pos.y >= windowHeight -  data.rec.height;
+}
+
+AnimData updateAnimData(AnimData data , float deltaTime , int maxFrame){
+       //update running tume 
+       data.runningTime +=  deltaTime;
+       if(data.runningTime >=  data.updateTime){
+           data.runningTime = 0.0 ;
+           //update animation frame
+        data.rec.x =  data.frame * data.rec.width ; 
+        data.frame++;
+        if(data.frame > maxFrame ){
+            data.frame = 0 ;
+
+        }
+       }
+
+       return data ; 
+}
 int main(){
 
  const int windowWidth = 512 ;
@@ -38,6 +58,15 @@ const int gravity = 1000 ;
 const int jumpVel =  -600;
 const int nebvel = -200;
 bool isInAir;
+ //background image
+ Texture2D background =  LoadTexture("./textures/far-buildings.png"); 
+
+//migground
+Texture2D  midGround =  
+LoadTexture("./textures/back-buildings.png");
+
+//foreground 
+Texture2D foregroud= LoadTexture("./textures/foreground.png");
 
 //nebula variables 
 
@@ -110,16 +139,54 @@ scarfyData.runningTime = 0.0;
 // const float updateTime = 1.0/12.0;
 // float  runningTime = 0.0 ; 
 
-
+float bgX = 0;
+float mgX =  0 ;
+float fgX = 0 ;
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {  /* code */
         BeginDrawing();
         ClearBackground(WHITE);
-           const float dt = GetFrameTime();
-       
+  const float dt = GetFrameTime();
+ bgX -= 20 *dt ;
+ if(bgX <= -background.width *2){
+     bgX = 0.0;
+ }
+       //Draw the backgroud 
+       Vector2 bg1Pos {bgX, 0.0 };
+    
+       DrawTextureEx(background ,bg1Pos , 0.0 ,  2.0 ,WHITE); 
+           Vector2 bg2Pos{bgX + background.width *2 ,0.0 };
+        DrawTextureEx(background ,bg2Pos , 0.0 ,  2.0 ,WHITE);
+
+        //draw the midgroud
+    mgX -=  40 *dt ; 
+     if(mgX <=  -midGround.width *2){
+         mgX = 0.0;
+     }
+        Vector2 mgPos {mgX ,0.0};
+        Vector2 mg2Pos{
+            mgX + midGround.width*2 , 0.0
+        };
+        DrawTextureEx(midGround ,mgPos , 0.0 ,2 , WHITE);
+    DrawTextureEx(midGround ,mg2Pos , 0.0 ,2 , WHITE);
+
+        //foregroud 
+ fgX -= 80*dt ;
+     if(fgX <=  -foregroud.width *2){
+         fgX = 0.0;
+     }
+    Vector2 fgPos {
+     fgX ,0.0
+    };
+    Vector2  fg2Pos {
+        fgX + foregroud.width *2 , 0.0
+    };
+    DrawTextureEx(foregroud , fgPos , 0.0 ,2.0 ,WHITE);
+      DrawTextureEx(foregroud , fg2Pos , 0.0 ,2.0 ,WHITE);
             //ground check
-            if(scarfyData.pos.y>=  windowHeight - scarfyData.rec.height){
+            if(isOnGround(   scarfyData ,  windowHeight )
+               ){
                 //rectangle is on the ground
                 isInAir =  false;
                 velocity =   0 ;
@@ -191,5 +258,8 @@ DrawTextureRec(nebula , nebuli[i].rec , nebuli[i].pos, WHITE);
     }
     UnloadTexture(scarfy);
     UnloadTexture(nebula);
+    UnloadTexture(background);
+    UnloadTexture(foregroud);
+    UnloadTexture(midGround);
     CloseWindow();
 }

@@ -81,7 +81,7 @@ Texture2D nebula =  LoadTexture("./textures/12_nebula_spritesheet.png");
 
 // 0 , 1.0/16.0 ,0.0};
 
-const int size = 20;
+const int size = 3;
 AnimData nebuli[size]{};
 
 for(int  i = 0 ; i<size ;  i++){
@@ -128,7 +128,7 @@ scarfyData.runningTime = 0.0;
 // Rectangle scarfyRec =;
 
 // scarfyRec.width =  ; 
-// scarfyRec.height =;
+// sca4rfyRec.height =;
 // scarfyRec.x = 0 ;
 // scarfyRec.y = 0 ;
 // Vector2 scarfyPos ;
@@ -249,12 +249,12 @@ bool collision = false;
       
 
      for(AnimData nebula : nebuli){
-            float pad  = 20;
+            float pad  = 40;
          Rectangle nebRec {
-             nebula.pos.x + pad,
-             nebula.pos.y +pad ,
-             nebula.rec.width -2 *pad ,
-             nebula.rec.height-  2 * pad
+             nebula.pos.x + pad ,
+             nebula.pos.y + pad ,
+             nebula.rec.width- (2* pad)  ,
+             nebula.rec.height -(2 * pad)
          };
 
          Rectangle scarfyRec{
@@ -271,8 +271,13 @@ bool collision = false;
         
       
            if(collision){
+       DrawText("Game Over", windowWidth/2 , windowHeight/2 , 20  , RED);
+           }
+           else if(scarfyData.pos.x >= finisLine){
+  DrawText("You Win", windowWidth/2 , windowHeight/2 , 20  , WHITE);
 
-           }  else{
+           }
+             else{
         DrawTextureRec(scarfy ,scarfyData.rec ,scarfyData.pos , WHITE);
                 for(int i = 0 ;i<size ;i++){ 
         DrawTextureRec(nebula , nebuli[i].rec , nebuli[i].pos, WHITE);
